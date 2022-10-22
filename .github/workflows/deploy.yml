@@ -3,14 +3,16 @@ name: Deploy production
 on:
   push:
     branches:
-      - master
+      - club
 
 jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+        with:
+          ref: club
       - run: docker login ghcr.io -u $GITHUB_ACTOR -p ${{ secrets.TOKEN }}
       - run: docker build -t ghcr.io/$GITHUB_ACTOR/club:latest -t ghcr.io/$GITHUB_ACTOR/club:$GITHUB_SHA .
       - run: docker image push ghcr.io/$GITHUB_ACTOR/club:$GITHUB_SHA
@@ -25,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: club
       - name: Make envfile
         run: export | grep "secret_" | sed "s/declare -x secret_//" > .env
         env:
