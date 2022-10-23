@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -8,6 +9,8 @@ from django.db import models
 from club.exceptions import RateLimitException, InvalidCode
 from users.models.user import User
 from utils.strings import random_string, random_number
+
+logger = logging.getLogger(__name__)
 
 
 class Apps(models.Model):
@@ -75,13 +78,15 @@ class Code(models.Model):
         if last_codes_count >= settings.AUTH_MAX_CODE_COUNT:
             raise RateLimitException(title="Вы запросили слишком много кодов", message="Подождите немного")
 
-        return Code.objects.create(
+        code = Code.objects.create(
             recipient=recipient,
             user=user,
             code=random_number(length),
             created_at=datetime.utcnow(),
             expires_at=datetime.utcnow() + settings.AUTH_CODE_EXPIRATION_TIMEDELTA,
         )
+        logger.info("Code for user %s - %s", user, code.code)
+        return code
 
     @classmethod
     def check_code(cls, recipient: str, code: str) -> User:
