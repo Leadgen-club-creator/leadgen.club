@@ -8,17 +8,12 @@ services:
       - MODE=production
       - PYTHONUNBUFFERED=1
       - DEBUG=false
-      - APP_HOST=https://vas3k.club
-      - MEDIA_UPLOAD_URL=https://i.vas3k.club/upload/
       - POSTGRES_DB=vas3k_club
       - POSTGRES_USER=vas3k
       - POSTGRES_PASSWORD=vas3k
       - POSTGRES_HOST=postgres
       - REDIS_DB=0
       - REDIS_HOST=redis
-      - EMAIL_HOST
-      - EMAIL_PORT
-      - DEFAULT_FROM_EMAIL
     env_file:
       - .env
     restart: always
