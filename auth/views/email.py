@@ -9,7 +9,7 @@ from django_q.tasks import async_task
 
 from auth.helpers import set_session_cookie
 from auth.models import Session, Code
-from notifications.email.users import send_auth_email
+from notifications.email.users import send_auth_email, send_payed_email
 from notifications.telegram.users import notify_user_auth
 from users.models.user import User
 
@@ -51,7 +51,7 @@ def email_login(request):
             now = datetime.utcnow()
 
             try:
-                user, _ = User.objects.get_or_create(
+                user, created = User.objects.get_or_create(
                     email=email_or_login.lower(),
                     defaults=dict(
                         membership_platform_type=User.MEMBERSHIP_PLATFORM_DIRECT,
@@ -63,6 +63,10 @@ def email_login(request):
                         moderation_status=User.MODERATION_STATUS_INTRO,
                     ),
                 )
+
+                if created:
+                    send_payed_email(user)
+
             except IntegrityError:
                 return render(request, "error.html", {
                     "title": "Что-то пошло не так 🤔",

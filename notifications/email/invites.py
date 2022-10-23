@@ -1,4 +1,4 @@
-from django.template import loader
+7from django.template import loader
 
 from notifications.email.sender import send_club_email
 from users.models.user import User
