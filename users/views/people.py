@@ -65,7 +65,7 @@ def people(request):
                 "can_refer", "search_employees", "search_job", "search_remote", "search_relocate"
             }],
             "collectible": [
-                tag for tag in tag_stat_groups[Tag.GROUP_COLLECTIBLE] if tag.user_count > 1
+                tag for tag in tag_stat_groups.get(Tag.GROUP_COLLECTIBLE, []) if tag.user_count > 1
             ][:20]
         })
         cache.set("people_tag_stat_groups", tag_stat_groups, TAGS_CACHE_TIMEOUT_SECONDS)
